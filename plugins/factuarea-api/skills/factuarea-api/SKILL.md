@@ -65,7 +65,7 @@ A call outside a key's scopes returns `403` with `code: insufficient_scope`.
 `https://app.factuarea.com/settings/developers/api-keys` (Settings → Developers →
 API Keys). Choose the Test environment for a `fact_test_` key. The API is in
 **private beta** — companies must be allowlisted first; request access at
-`api@factuarea.com` (see `https://docs.factuarea.com/beta-access`).
+`info@factuarea.com` (see `https://docs.factuarea.com/beta-access`).
 
 ## Identity (IDs)
 

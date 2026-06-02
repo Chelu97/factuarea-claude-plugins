@@ -59,7 +59,7 @@ in the skill automatically. To invoke it manually:
 - LLM index: <https://docs.factuarea.com/llms.txt> · full dump:
   <https://docs.factuarea.com/llms-full.txt>
 - Claude Code guide: <https://docs.factuarea.com/guides/claude-code>
-- Beta access: <https://docs.factuarea.com/beta-access> · `api@factuarea.com`
+- Beta access: <https://docs.factuarea.com/beta-access> · `info@factuarea.com`
 
 ## License
 

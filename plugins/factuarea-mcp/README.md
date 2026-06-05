@@ -1,0 +1,87 @@
+# factuarea-mcp
+
+Connects [Claude Code](https://claude.com/claude-code) to the
+**[Factuarea](https://factuarea.com) MCP server** — the Factuarea public API
+exposed as tools for invoicing, quotes, pro-formas, delivery notes, recurring &
+purchase invoices, clients, suppliers, products, document series, taxes,
+VeriFactu (AEAT), webhooks and a business dashboard for Spanish companies.
+
+The plugin ships two things:
+
+- the **MCP server** declaration (`https://mcp.factuarea.com/mcp`, HTTP
+  transport), so Claude can call Factuarea tools directly; and
+- a **skill** that gives Claude the context to use them well — scopes, cursor
+  pagination, UUID v7 identity, the error envelope, and test (sandbox) mode.
+
+## Install
+
+In Claude Code:
+
+```text
+/plugin marketplace add factuarea/claude-plugins
+/plugin install factuarea-mcp@factuarea
+```
+
+`/plugin marketplace add` registers this catalog; `/plugin install` installs the
+plugin from it. To update later, run `/plugin marketplace update factuarea`.
+
+## Connect the server
+
+The plugin declares the server **without an auth header**, so the recommended
+path is OAuth:
+
+1. Run `/mcp`, pick **factuarea**, choose **Authenticate**.
+2. Approve in the browser — Dynamic Client Registration + PKCE are automatic. On
+   the consent screen you **select the company and the environment** (live or
+   test) and the scopes to grant.
+
+Prefer to use your own API key instead? Connect with a static header:
+
+```bash
+claude mcp add --transport http factuarea https://mcp.factuarea.com/mcp \
+  --header "Authorization: Bearer fact_live_xxxxxxxxxxxxxxxxxxxxxxxx"
+```
+
+Use a `fact_test_` key for the isolated sandbox (external effects off).
+
+## Use it
+
+Once connected, just ask Claude to work with your Factuarea data — "list this
+quarter's unpaid invoices", "create a draft invoice for Acme S.L.", "check the
+VeriFactu chain", "add a webhook endpoint". The skill loads automatically to
+guide those calls; you can also invoke it manually:
+
+```text
+/factuarea-mcp:factuarea-mcp
+```
+
+## What the skill knows
+
+- **Connecting** via OAuth (consent with company + environment selection) or an
+  API key header.
+- **Channel policy** — an API key reaches the full **223 tools**; OAuth uses a
+  curated **215**, never granting `verifactu:write` or the GDPR signature-forget
+  operation to third-party apps.
+- **15 tool domains** and their scopes, plus how plan/module and feature flags
+  further narrow what's listed.
+- **Identity** — opaque `id` (UUID v7), foreign keys as `*_id`.
+- **Cursor pagination** — `{ data, has_more, next_cursor }`, no page numbers.
+- **Errors** — `insufficient_scope`, `addon_not_active`, `422` business-rule
+  violations, `429` with `Retry-After`.
+- **Test mode** — the `fact_test_` prefix / test OAuth grant points at an
+  isolated sandbox with external effects switched off.
+
+## Resources
+
+- MCP docs: <https://docs.factuarea.com/mcp> — connect · authentication · tools ·
+  scopes · errors · test-mode
+- Docs home: <https://docs.factuarea.com>
+- Dashboard / API keys: <https://app.factuarea.com/settings/developers/api-keys>
+- Beta access: `info@factuarea.com`
+
+Looking to build a code integration against the REST API instead of using tools?
+See the companion **`factuarea-api`** plugin in this marketplace.
+
+## License
+
+[MIT](../../LICENSE)

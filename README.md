@@ -9,15 +9,17 @@ Spanish businesses.
 
 | Plugin | What it does |
 | --- | --- |
-| `factuarea-api` | Ships a skill that gives Claude the full context of the Factuarea public API — base URL, API-key auth (`fact_live_` / `fact_test_`), UUID v7 identity, idempotency, cursor pagination, the error envelope, webhook HMAC verification, VeriFactu/FacturaE compliance, and how to generate a typed client from the OpenAPI spec. Claude loads it automatically when you ask it to build a Factuarea integration, or you can trigger it with `/factuarea-api`. |
+| `factuarea-api` | Ships a skill that gives Claude the full context of the Factuarea public API — base URL, API-key auth (`fact_live_` / `fact_test_`), UUID v7 identity, idempotency, cursor pagination, the error envelope, webhook HMAC verification, VeriFactu/FacturaE compliance, and how to generate a typed client from the OpenAPI spec. Claude loads it automatically when you ask it to build a Factuarea integration, or you can trigger it with `/factuarea-api`. Best for **writing code** against the REST API. |
+| `factuarea-mcp` | Connects Claude Code to the **Factuarea MCP server** (`https://mcp.factuarea.com/mcp`) so Claude can call Factuarea tools directly — search/create/send invoices, manage clients, check VeriFactu, configure webhooks. Authenticate via OAuth (`/mcp` → Authenticate, with company + environment selection) or an API-key header. Ships a skill covering scopes, cursor pagination, the error envelope and test mode. Best for **operating your account** through tools. |
 
 ## Install
 
-In Claude Code:
+In Claude Code, add the marketplace once, then install the plugin you want:
 
 ```text
 /plugin marketplace add factuarea/claude-plugins
 /plugin install factuarea-api@factuarea
+/plugin install factuarea-mcp@factuarea
 ```
 
 `/plugin marketplace add` registers this catalog; `/plugin install` installs the

@@ -1,66 +1,72 @@
 # Factuarea — Claude Code plugins
 
-Official [Claude Code](https://claude.com/claude-code) plugin marketplace for the
-**[Factuarea](https://factuarea.com) public API** — the REST API to automate
-invoicing, quotes, clients, suppliers, products, VeriFactu and webhooks for
-Spanish businesses.
+Official [Claude Code](https://claude.com/claude-code) plugin marketplace for
+**[Factuarea](https://factuarea.com)** — the multi-tenant invoicing SaaS for
+Spanish businesses (invoicing, quotes, clients, suppliers, products, VeriFactu
+and webhooks).
 
 ## What's inside
 
 | Plugin | What it does |
 | --- | --- |
-| `factuarea-api` | Ships a skill that gives Claude the full context of the Factuarea public API — base URL, API-key auth (`fact_live_` / `fact_test_`), UUID v7 identity, idempotency, cursor pagination, the error envelope, webhook HMAC verification, VeriFactu/FacturaE compliance, and how to generate a typed client from the OpenAPI spec. Claude loads it automatically when you ask it to build a Factuarea integration, or you can trigger it with `/factuarea-api`. Best for **writing code** against the REST API. |
-| `factuarea-mcp` | Connects Claude Code to the **Factuarea MCP server** (`https://mcp.factuarea.com/mcp`) so Claude can call Factuarea tools directly — search/create/send invoices, manage clients, check VeriFactu, configure webhooks. Authenticate via OAuth (`/mcp` → Authenticate, with company + environment selection) or an API-key header. Ships a skill covering scopes, cursor pagination, the error envelope and test mode. Best for **operating your account** through tools. |
+| `factuarea-mcp` | Connects Claude Code to the **Factuarea MCP server** (`https://mcp.factuarea.com`) so Claude can call Factuarea tools directly — search/create/send invoices, manage clients, check VeriFactu, configure webhooks. Authenticate via OAuth (`/mcp` → Authenticate, with company + environment selection) or an API-key header. Ships a skill covering the tool domains, scopes, cursor pagination, the error envelope and test mode. |
 
 ## Install
 
-In Claude Code, add the marketplace once, then install the plugin you want:
+In Claude Code:
 
 ```text
 /plugin marketplace add factuarea/claude-plugins
-/plugin install factuarea-api@factuarea
 /plugin install factuarea-mcp@factuarea
 ```
 
 `/plugin marketplace add` registers this catalog; `/plugin install` installs the
 plugin from it. To update later, run `/plugin marketplace update factuarea`.
 
-### Use it
+## Connect the server
 
-Once installed, just ask Claude to build a Factuarea integration and it will pull
-in the skill automatically. To invoke it manually:
+The plugin declares the server **without an auth header**, so the recommended
+path is OAuth:
 
-```text
-/factuarea-api
+1. Run `/mcp`, pick **factuarea**, choose **Authenticate**.
+2. Approve in the browser — Dynamic Client Registration + PKCE are automatic. On
+   the consent screen you **select the company and the environment** (live or
+   test) and the scopes to grant.
+
+Prefer your own API key? Connect with a static header instead:
+
+```bash
+claude mcp add --transport http factuarea https://mcp.factuarea.com \
+  --header "Authorization: Bearer fact_live_xxxxxxxxxxxxxxxxxxxxxxxx"
 ```
+
+Use a `fact_test_` key for the isolated sandbox (external effects off). The
+canonical endpoint is the root `https://mcp.factuarea.com`; the older
+`https://mcp.factuarea.com/mcp` keeps working as a compatibility alias.
 
 ## What the skill knows
 
-- **Base URL** `https://api.factuarea.com/v1` and JSON responses.
-- **Auth** via `Authorization: Bearer <key>` or `X-API-Key`, with `fact_live_*`
-  (production) and `fact_test_*` (isolated sandbox, external effects off) keys and
-  fine-grained scopes.
+- **Connecting** via OAuth (consent with company + environment selection) or an
+  API-key header.
+- **Channel policy** — an API key reaches the full **223 tools**; OAuth uses a
+  curated **215**, never granting `verifactu:write` or the GDPR signature-forget
+  operation to third-party apps.
+- **15 tool domains** and their scopes, plus how plan/module and feature flags
+  further narrow what's listed.
 - **Identity** — opaque `id` (UUID v7), foreign keys as `*_id`.
-- **Idempotency** — `Idempotency-Key` header (1–64 chars, UUID v7 recommended,
-  24h TTL).
-- **Pagination** — cursor-based (`limit` / `starting_after` / `ending_before`,
-  `{ data, has_more, next_cursor }`).
-- **Errors** — the `{ error: { type, code, subcode, message, param, doc_url,
-  request_id } }` envelope and status-code catalog.
-- **Webhooks** — `Factuarea-Signature` HMAC SHA-256 verification with dual-signing
-  on rotation and exponential retries.
-- **Compliance** — VeriFactu (AEAT, RD 1007/2023), FacturaE 3.2.x, Modelos
-  303/347.
-- **Workflow** — start in test mode, generate a typed client from the OpenAPI
-  spec, and use `/llms-full.txt` for full context.
+- **Cursor pagination** — `{ data, has_more, next_cursor }`, no page numbers.
+- **Errors** — `insufficient_scope`, `addon_not_active`, `422` business-rule
+  violations, `429` with `Retry-After`.
+- **Test mode** — the `fact_test_` prefix / test OAuth grant points at an
+  isolated sandbox with external effects switched off.
 
 ## Resources
 
-- Docs: <https://docs.factuarea.com>
+- MCP docs: <https://docs.factuarea.com/mcp> — connect · authentication · tools ·
+  scopes · errors · test-mode
+- Docs home: <https://docs.factuarea.com>
 - OpenAPI spec: <https://docs.factuarea.com/api/openapi>
-- LLM index: <https://docs.factuarea.com/llms.txt> · full dump:
-  <https://docs.factuarea.com/llms-full.txt>
-- Claude Code guide: <https://docs.factuarea.com/guides/claude-code>
+- Dashboard / API keys: <https://app.factuarea.com/settings/developers/api-keys>
 - Beta access: <https://docs.factuarea.com/beta-access> · `info@factuarea.com`
 
 ## License

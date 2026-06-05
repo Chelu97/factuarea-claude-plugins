@@ -82,9 +82,6 @@ guide those calls; you can also invoke it manually:
 - Dashboard / API keys: <https://app.factuarea.com/settings/developers/api-keys>
 - Beta access: `info@factuarea.com`
 
-Looking to build a code integration against the REST API instead of using tools?
-See the companion **`factuarea-api`** plugin in this marketplace.
-
 ## License
 
 [MIT](../../LICENSE)

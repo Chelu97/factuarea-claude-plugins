@@ -8,30 +8,6 @@
   },
   "plugins": [
     {
-      "name": "factuarea-api",
-      "source": "./plugins/factuarea-api",
-      "description": "Gives Claude the context to build integrations with the Factuarea public API: invoicing, quotes, clients, VeriFactu, and webhooks for Spanish businesses.",
-      "version": "0.1.0",
-      "author": {
-        "name": "Factuarea",
-        "email": "info@factuarea.com"
-      },
-      "homepage": "https://docs.factuarea.com",
-      "repository": "https://github.com/factuarea/claude-plugins",
-      "license": "MIT",
-      "keywords": [
-        "factuarea",
-        "invoicing",
-        "facturacion",
-        "verifactu",
-        "facturae",
-        "spain",
-        "rest-api",
-        "webhooks"
-      ],
-      "category": "productivity"
-    },
-    {
       "name": "factuarea-mcp",
       "source": "./plugins/factuarea-mcp",
       "description": "Connects Claude Code to the Factuarea MCP server: invoicing, quotes, clients, suppliers, products, VeriFactu and webhooks for Spanish businesses, exposed as tools over OAuth or an API key.",

@@ -8,7 +8,7 @@ VeriFactu (AEAT), webhooks and a business dashboard for Spanish companies.
 
 The plugin ships two things:
 
-- the **MCP server** declaration (`https://mcp.factuarea.com/mcp`, HTTP
+- the **MCP server** declaration (`https://mcp.factuarea.com`, HTTP
   transport), so Claude can call Factuarea tools directly; and
 - a **skill** that gives Claude the context to use them well — scopes, cursor
   pagination, UUID v7 identity, the error envelope, and test (sandbox) mode.
@@ -38,9 +38,12 @@ path is OAuth:
 Prefer to use your own API key instead? Connect with a static header:
 
 ```bash
-claude mcp add --transport http factuarea https://mcp.factuarea.com/mcp \
+claude mcp add --transport http factuarea https://mcp.factuarea.com \
   --header "Authorization: Bearer fact_live_xxxxxxxxxxxxxxxxxxxxxxxx"
 ```
+
+The canonical endpoint is the root `https://mcp.factuarea.com`; the older
+`https://mcp.factuarea.com/mcp` keeps working as a compatibility alias.
 
 Use a `fact_test_` key for the isolated sandbox (external effects off).
 

@@ -7,9 +7,12 @@ description: Operate the Factuarea MCP server — invoicing, quotes, pro-formas,
 
 Factuarea is a multi-tenant invoicing SaaS for Spanish businesses. This plugin
 connects Claude Code to the **Factuarea MCP server** at
-`https://mcp.factuarea.com/mcp` (HTTP transport), exposing the Factuarea public
-API as MCP tools. Every tool is bound to one company and one environment, and is
+`https://mcp.factuarea.com` (HTTP transport), exposing the Factuarea public API
+as MCP tools. Every tool is bound to one company and one environment, and is
 gated by OAuth scopes, the company's subscription module, and feature flags.
+
+> The canonical endpoint is the root `https://mcp.factuarea.com`; the older
+> `https://mcp.factuarea.com/mcp` keeps working as a compatibility alias.
 
 This skill is the context Claude needs to drive those tools correctly. It is a
 summary — the **source of truth is the published docs** (links below). When you
@@ -42,7 +45,7 @@ For headless setups or when the user already has a `fact_` key, connect with a
 static header instead of OAuth:
 
 ```bash
-claude mcp add --transport http factuarea https://mcp.factuarea.com/mcp \
+claude mcp add --transport http factuarea https://mcp.factuarea.com \
   --header "Authorization: Bearer fact_live_xxxxxxxxxxxxxxxxxxxxxxxx"
 ```
 

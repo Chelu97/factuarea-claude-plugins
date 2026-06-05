@@ -2,7 +2,7 @@
   "mcpServers": {
     "factuarea": {
       "type": "http",
-      "url": "https://mcp.factuarea.com/mcp"
+      "url": "https://mcp.factuarea.com"
     }
   }
 }
